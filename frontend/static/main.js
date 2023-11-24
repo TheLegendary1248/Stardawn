@@ -1,7 +1,6 @@
-import 'matter-js'
-
-console.log("Hey!, this is from source")
-      // module aliases
+console.log("What the hell")
+//import 'matter-js'
+// module aliases
 var Engine = Matter.Engine,
     Render = Matter.Render,
     Runner = Matter.Runner,
@@ -16,6 +15,8 @@ var render = Render.create({
     canvas: document.getElementById("canvas-renderer"),
     engine: engine
 });
+
+
 
 // create two boxes and a ground
 var boxA = Bodies.rectangle(400, 200, 80, 80);
