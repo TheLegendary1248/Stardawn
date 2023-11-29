@@ -1,3 +1,11 @@
+:root{
+    --e-h: #212;
+    --cosmic-latte: #fef8e6;
+}
+body {
+    background-color: var(--e-h);
+
+}
 #canvas-area{
     position: fixed;
     width: 100%;

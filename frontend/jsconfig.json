@@ -1,12 +1,11 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
 		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
+		//"resolveJsonModule": true,
+		"skipLibCheck": false,
 		"sourceMap": true,
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext"
-	}
+		"allowArbitraryExtensions": true,
+		"module": "CommonJS"
+	},
+	"randomCommentFromAuthor" : "Somehow this is actually necessary for vscode to pickup dependencies, so you get suggestions for imports that are otherwise made thru CDN's"
 }

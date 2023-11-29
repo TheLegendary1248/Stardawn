@@ -6,3 +6,4 @@
 
 3. The Universe was never boundless. Any of it's creations outside it's horizons will be forgotten
 
+4. The Universe degenerates with each Unfulfilled Action. It has clearly had enough of you.
