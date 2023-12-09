@@ -1,10 +1,9 @@
 :root{
-    --e-h: #212;
+    --e-h: #111;
     --cosmic-latte: #fef8e6;
 }
 body {
-    background-color: var(--e-h);
-
+    background-color: #000;
 }
 #canvas-area{
     position: fixed;
@@ -14,7 +13,15 @@ body {
     top: 0px;
 }
 #canvas-area canvas{
-    width: 100%;
-    height: 100%;
     background-color: #0000 !important;
+    z-index: -5;
+    position: relative;
+}
+#inlog {
+    font-size: 10px;
+    font-family: 'Tahoma';
+    background-color: #111;
+    color: #fff;
+    z-index: 5000;
+    position: fixed;
 }
