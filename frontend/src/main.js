@@ -1,9 +1,13 @@
-
+import test from './test'
+console.log(test)
 /**
  * The base for all Stardawn objects
  */
-class SDObject {
-    
+var SDObject = class {
+    constructor(){
+        this.body = null
+        this.position = null
+    }
 }
 class SDSpace extends Pts.CanvasSpace
 {
@@ -13,12 +17,6 @@ class SDSpace extends Pts.CanvasSpace
     translate(x, y){
         return this._ctx.translate(x,y)
     }
-}
-class GameView {
-    constructor(center, minPx) {
-        
-    }
-    
 }
 // create an engine
 var engine = Engine.create();
@@ -69,9 +67,8 @@ ptsSpace.add(
     ptsForm.strokeOnly("#fff", 3).dash(true,time/200).point(cursor, 16, "circle")
     ptsForm.fillOnly("#f00").point(cursor, 3, "circle")
     //Reset
-    ptsForm.dash(false).fill(false).stroke("#f00",4)
     ptsSpace.ctx.scale(1,1)
-    
+    ptsForm.dash(false).fill("#f00").stroke("#450",4)
     CustomWorldRender(render, time)
 }, action: (type, px, py, evt) => 
 { 
@@ -85,36 +82,62 @@ ptsSpace.add(
             case "a": case "ArrowLeft": moveFunc([10,0]); break;
             case "s": case "ArrowDown": moveFunc([0,-10]); break;
             case "d": case "ArrowRight": moveFunc([-10,0]); break;
-            case "space": 
+            case " ": PlayTimeSegment(); break;
         }
     }
     if (type == "drag")
     {
         center.add([evt.movementX,evt.movementY])
     }
-    if (type == "click") {cursor = (new Pts.Pt([px - ptsSpace.width/2, py - ptsSpace.height/2])).$subtract(center)}
+    if (type == "click") 
+    {
+        cursor = (new Pts.Pt([px - ptsSpace.width/2, py - ptsSpace.height/2])).$subtract(center)
+        cursor.x |= 0
+        cursor.y |= 0
+    }
     console.log(type, px, py, evt)
 }
 } );
+var GetState = () => { throw Error("not implement") }
 ptsSpace.bindMouse().bindTouch().bindKeyboard().play()
 }
-
-function RunFrame(){
-    Engine.update(engine)
-    //console.log("Ran Matter Frame")
-}
-
 var CreatePlayerBody = (x,y) => Bodies.fromVertices(x,y, Matter.Vertices.create([{x:0,y:30},{x:15, y:-15},{x:-15, y: -15}]),{render:{fillStyle:'#f00'}})
-
 var PlayerA = CreatePlayerBody(-200,-200)
+PlayerA.label = "Moron"
+PlayerA.oncollide = oncollide
 var PlayerB = CreatePlayerBody(200,200)
+PlayerB.label = "Moron"
+PlayerB.oncollide = oncollide
 var asteroids = []
-// create two boxes and a ground
+function oncollide() {
+    console.log("HEY ME")
+}
+// asteroid field
 for(var i = 0; i < 40; i++) asteroids.push(Bodies.circle(Math.random() * 1000 - 500, Math.random() * 1000 - 500, Math.random() * 40 + 10));
 // add all of the bodies to the world
 Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
+function ToInt()
+{
 
-
+}
+Events.on(engine, "collisionStart", function(event) {
+    var pairs = event.pairs
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i];
+        var bodyA = pair.bodyA
+        var bodyB = pair.bodyB
+        if(bodyA.oncollide) bodyA.oncollide()
+        if(bodyB.oncollide) bodyB.oncollide()
+    }
+})
+function PlayTimeSegment() {
+    //Init
+    Body.applyForce(PlayerA, PlayerA.position, Vector.mult(Vector.sub(cursor, PlayerA.position), 0.00001))
+    Body.applyForce(PlayerB, PlayerB.position, Vector.mult(Vector.sub(cursor, PlayerB.position), 0.00001))
+    //Run physics
+    runTicks = 60
+    //Get world current state
+}
 //This broke introducing PTS. Will fix later
 function fitCanvas() {
     //https://github.com/liabru/matter-js/issues/955
@@ -131,6 +154,11 @@ function fitCanvas() {
     render.canvas.height = winHeight;
 }
 fitCanvas()
+
 //window.addEventListener('resize', fitCanvas);
 //little experimental thing
 //fetch("/components/card.html").then((r) => r.text().then((html) => document.getElementById("card-container").innerHTML = html.repeat(4))) 
+if (import.meta.hot) {
+    import.meta.hot.accept((update) => {console.log("heyoooo!")})
+
+}

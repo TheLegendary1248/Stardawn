@@ -8,7 +8,8 @@ var Engine = Matter.Engine,
     Body = Matter.Body,
     Vector = Matter.Vector;
 var inlogElement = document.getElementById('inlog')
-function inlog(){inlogElement.innerText = Array.from(arguments).map(JSON.stringify)} 
+function inlog(){inlogElement.innerText = Array.from(arguments).map(JSON.stringify)}
+//Sets up the render function for the render module
 var CustomWorldRender = function(render, time) {
         var startTime = Common.now(),
             engine = render.engine,
@@ -28,9 +29,9 @@ var CustomWorldRender = function(render, time) {
         var event = {
             timestamp: engine.timing.timestamp
         };
-
         Events.trigger(render, 'beforeRender', event);
-
+        //context.fillStyle = "#f00"
+        //context.strokeStyle = "transparent"
         // Background application here is removed
         // clear the canvas with a transparent fill, to allow the canvas background to show
         // context.globalCompositeOperation = 'source-in';
