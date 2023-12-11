@@ -1,7 +1,0 @@
-runtime: nodejs18
-
-instance_class: F1
-
-automatic_scaling:
-  max_instances: 2
-  min_instances: 0
