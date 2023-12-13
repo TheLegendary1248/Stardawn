@@ -1,43 +1,19 @@
-import test from './test'
-console.log(test)
-/**
- * The base for all Stardawn objects
- */
-var SDObject = class {
-    constructor(){
-        this.body = null
-        this.position = null
-    }
-}
-class SDSpace extends Pts.CanvasSpace
-{
-    /**
-     * @type {Pts.CanvasSpace()}
-     */
-    translate(x, y){
-        return this._ctx.translate(x,y)
-    }
-}
+//import HTMLInsert from "./HTMLInsert";
+import SDSpace from "./sdspace";
+import SDWorld from "./sdWorld";
 // create an engine
-var engine = Engine.create();
-engine.gravity.scale = 0 
+
 // create a renderer
 /** @type {HTMLCanvasElement} */
-let canvasElement =  document.getElementById("canvas-renderer") 
-let ptsSpace = new SDSpace('#canvas-renderer', DoPTSThing)
-let render = Render.create({
-    canvas: canvasElement,
-    engine: engine,
-    options: {
-        background: '#fff',
-        hasBounds: false
-    }
-});
+let canvasElement =  document.getElementById("canvas-renderer",DoPTSThing)
+let world = new SDWorld([canvasElement,DoPTSThing]) 
+let ptsSpace = world.space
+let followCursor = new Pts.Pt(0,0)
 let center = new Pts.Pt(0,0)
 let followCenter = new Pts.Pt()
 let cursor = new Pts.Pt(0,0)
-console.log(canvasElement)
-let runTicks = 100
+let render = world.render
+let runTicks = 64
 function RunPhysics() {
     if(runTicks > 0) {
         Engine.update(engine, 1000/60)
@@ -45,12 +21,9 @@ function RunPhysics() {
         runTicks--
     }   
 }
-let ptsForm = new Pts.CanvasForm(ptsSpace)
-ptsSpace.background = '#0001'
+let ptsForm = world.form
+ptsSpace.background = '#0000'
 function DoPTSThing() {
-console.log(ptsForm)
-console.log(ptsForm.ctx)
-ptsForm.arc(new Pts.Pt([30,30]), 40, 79, 189, false)
 ptsSpace.autoResize = true
 ptsSpace.add( 
     { animate: (time, ftime) => {
@@ -61,18 +34,23 @@ ptsSpace.add(
     ptsForm.composite()
     ptsSpace.translate(ptsSpace.width/2, ptsSpace.height/2)
     followCenter = Pts.Geom.interpolate(followCenter, center, Math.min(ftime * 6 / 1000, 1))
+    
     ptsSpace.translate(followCenter.x, followCenter.y)
     //Cursor
     ptsForm.fillOnly("#112").circle(Pts.Circle.fromCenter([0,0], 516));
     ptsForm.strokeOnly("#fff", 3).dash(true,time/200).point(cursor, 16, "circle")
     ptsForm.fillOnly("#f00").point(cursor, 3, "circle")
+    
     //Reset
     ptsSpace.ctx.scale(1,1)
-    ptsForm.dash(false).fill("#f00").stroke("#450",4)
+    ptsForm.dash(false).fill("#ffff").stroke("#450f",4)
+    
     CustomWorldRender(render, time)
+    ptsSpace.ctx.resetTransform()
+    ptsForm.fillOnly("#0ff").point(followCursor, 5, "circle")
 }, action: (type, px, py, evt) => 
 { 
-    inlog(evt)
+    inlog({type, px, py, evt})
     if (evt.type )
     if (type == "keydown") 
     {
@@ -95,10 +73,9 @@ ptsSpace.add(
         cursor.x |= 0
         cursor.y |= 0
     }
-    console.log(type, px, py, evt)
+    followCursor = new Pts.Pt(px, py)
 }
 } );
-var GetState = () => { throw Error("not implement") }
 ptsSpace.bindMouse().bindTouch().bindKeyboard().play()
 }
 var CreatePlayerBody = (x,y) => Bodies.fromVertices(x,y, Matter.Vertices.create([{x:0,y:30},{x:15, y:-15},{x:-15, y: -15}]),{render:{fillStyle:'#f00'}})
@@ -112,14 +89,11 @@ var asteroids = []
 function oncollide() {
     console.log("HEY ME")
 }
+var engine = world.engine
 // asteroid field
 for(var i = 0; i < 40; i++) asteroids.push(Bodies.circle(Math.random() * 1000 - 500, Math.random() * 1000 - 500, Math.random() * 40 + 10));
 // add all of the bodies to the world
 Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
-function ToInt()
-{
-
-}
 Events.on(engine, "collisionStart", function(event) {
     var pairs = event.pairs
     for (var i = 0; i < pairs.length; i++) {
@@ -154,11 +128,10 @@ function fitCanvas() {
     render.canvas.height = winHeight;
 }
 fitCanvas()
-
 //window.addEventListener('resize', fitCanvas);
-//little experimental thing
-//fetch("/components/card.html").then((r) => r.text().then((html) => document.getElementById("card-container").innerHTML = html.repeat(4))) 
-if (import.meta.hot) {
-    import.meta.hot.accept((update) => {console.log("heyoooo!")})
 
-}
+// if (import.meta.hot) {
+//     import.meta.hot.accept((update) => {console.log("heyoooo!")})
+
+// }
+export { render, ptsForm, ptsSpace}

@@ -10,7 +10,6 @@
  * @type {Pts}
  */
 let Pts = Pts
-
 /** 
  * @typedef {import('alpinejs').default} Alpine
 */

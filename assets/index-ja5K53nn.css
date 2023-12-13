@@ -1,0 +1,1 @@
+:root{--e-h: #111;--cosmic-latte: #fef8e6}body{background-color:#000}#canvas-area{position:fixed;width:100%;height:100%;left:0;top:0}#canvas-area canvas{background-color:#0000!important;z-index:-5;position:relative}#inlog{font-size:10px;font-family:Tahoma;background-color:#111;color:#fff;z-index:5000;position:fixed}

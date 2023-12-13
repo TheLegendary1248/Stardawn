@@ -11,6 +11,7 @@ var inlogElement = document.getElementById('inlog')
 function inlog(){inlogElement.innerText = Array.from(arguments).map(JSON.stringify)}
 //Sets up the render function for the render module
 var CustomWorldRender = function(render, time) {
+        //debugger;
         var startTime = Common.now(),
             engine = render.engine,
             world = engine.world,
@@ -18,7 +19,6 @@ var CustomWorldRender = function(render, time) {
             context = render.context,
             options = render.options,
             timing = render.timing;
-
         var allBodies = Composite.allBodies(world),
             allConstraints = Composite.allConstraints(world),
             background = options.wireframes ? options.wireframeBackground : options.background,
@@ -38,7 +38,8 @@ var CustomWorldRender = function(render, time) {
         // context.fillStyle = "transparent";
         // context.fillRect(0, 0, canvas.width, canvas.height);
         context.globalCompositeOperation = 'source-over';
-
+        console.log(context)
+        
         // handle bounds
         if (options.hasBounds) {
             // filter out bodies that are not in view
