@@ -1,8 +1,6 @@
 //import HTMLInsert from "./HTMLInsert";
 import SDSpace from "./sdspace";
 import SDWorld from "./sdWorld";
-// create an engine
-
 // create a renderer
 /** @type {HTMLCanvasElement} */
 let canvasElement =  document.getElementById("canvas-renderer",DoPTSThing)
@@ -47,11 +45,13 @@ ptsSpace.add(
     
     CustomWorldRender(render, time)
     ptsSpace.ctx.resetTransform()
-    ptsForm.fillOnly("#0ff").point(followCursor, 5, "circle")
+    ptsSpace.ctx.globalCompositeOperation = "difference"
+    ptsForm.fillOnly("#fff").point(followCursor, 6, "circle")
+    ptsForm.strokeOnly("#fff").point(followCursor, 16, "circle")
+    inlog(ptsSpace.pixelScale)
 }, action: (type, px, py, evt) => 
 { 
     inlog({type, px, py, evt})
-    if (evt.type )
     if (type == "keydown") 
     {
         var moveFunc = (m) => { center.add(m); console.log(m) } 
@@ -85,6 +85,7 @@ PlayerA.oncollide = oncollide
 var PlayerB = CreatePlayerBody(200,200)
 PlayerB.label = "Moron"
 PlayerB.oncollide = oncollide
+PlayerB.render.strokeStyle = "#ff0"
 var asteroids = []
 function oncollide() {
     console.log("HEY ME")
@@ -112,26 +113,5 @@ function PlayTimeSegment() {
     runTicks = 60
     //Get world current state
 }
-//This broke introducing PTS. Will fix later
-function fitCanvas() {
-    //https://github.com/liabru/matter-js/issues/955
-    var winHeight = window.innerHeight;
-    var winWidth = window.innerWidth;
-    render.bounds.max.y = 800 * (Math.max(winWidth, winHeight) / winWidth); 
-    render.bounds.max.x = 800 * (Math.max(winWidth, winHeight) / winHeight);
-    render.bounds.min = Vector.create(0,0);
-    Bounds.shift(render.bounds, Vector.create(0,0))
-    console.log(`${winWidth}/${winHeight}`)
-    render.options.width = winWidth;
-    render.options.height = winHeight;
-    render.canvas.width = winWidth;
-    render.canvas.height = winHeight;
-}
-fitCanvas()
-//window.addEventListener('resize', fitCanvas);
-
-// if (import.meta.hot) {
-//     import.meta.hot.accept((update) => {console.log("heyoooo!")})
-
-// }
+ptsSpace.pixelScale = 2
 export { render, ptsForm, ptsSpace}

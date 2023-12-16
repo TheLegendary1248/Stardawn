@@ -11,14 +11,14 @@ body {
     height: 100%;
     left: 0px;
     top: 0px;
+    scale: 1;
 }
 #canvas-area canvas{
     background-color: #0000 !important;
-    z-index: -5;
-    position: relative;
+
 }
 #inlog {
-    font-size: 10px;
+    font-size: 16px;
     font-family: 'Tahoma';
     background-color: #111;
     color: #fff;
