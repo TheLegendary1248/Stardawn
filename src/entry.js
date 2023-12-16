@@ -1,6 +1,10 @@
 //import HTMLInsert from "./HTMLInsert";
 import SDSpace from "./sdspace";
 import SDWorld from "./sdWorld";
+function clamp(number, min, max) {
+    return Math.max(min, Math.min(number, max));
+  }
+var scale = 1;
 // create a renderer
 /** @type {HTMLCanvasElement} */
 let canvasElement =  document.getElementById("canvas-renderer",DoPTSThing)
@@ -34,21 +38,26 @@ ptsSpace.add(
     followCenter = Pts.Geom.interpolate(followCenter, center, Math.min(ftime * 6 / 1000, 1))
     
     ptsSpace.translate(followCenter.x, followCenter.y)
-    //Cursor
-    ptsForm.fillOnly("#112").circle(Pts.Circle.fromCenter([0,0], 516));
-    ptsForm.strokeOnly("#fff", 3).dash(true,time/200).point(cursor, 16, "circle")
-    ptsForm.fillOnly("#f00").point(cursor, 3, "circle")
+    ptsSpace.ctx.scale(scale, scale)
     
+    ptsForm.fillOnly("#112").circle(Pts.Circle.fromCenter([0,0], 516));
     //Reset
     ptsSpace.ctx.scale(1,1)
     ptsForm.dash(false).fill("#ffff").stroke("#450f",4)
     
     CustomWorldRender(render, time)
+    //Cursor
+    ptsForm.strokeOnly("#fff", 3).dash(true,time/200).point(cursor, 16, "circle")
+    ptsForm.fillOnly("#f00").point(cursor, 3, "circle")
+    ptsForm.dash(false)
+    //UI Draw
     ptsSpace.ctx.resetTransform()
+    ptsSpace.ctx.scale(ptsSpace.pixelScale,ptsSpace.pixelScale)
+    //Follow cursor
     ptsSpace.ctx.globalCompositeOperation = "difference"
     ptsForm.fillOnly("#fff").point(followCursor, 6, "circle")
     ptsForm.strokeOnly("#fff").point(followCursor, 16, "circle")
-    inlog(ptsSpace.pixelScale)
+    
 }, action: (type, px, py, evt) => 
 { 
     inlog({type, px, py, evt})
@@ -69,7 +78,15 @@ ptsSpace.add(
     }
     if (type == "click") 
     {
-        cursor = (new Pts.Pt([px - ptsSpace.width/2, py - ptsSpace.height/2])).$subtract(center)
+        var toPos = (a) => {
+            var inputPt = new Pts.Pt(a)
+            inputPt[0] -= ptsSpace.width / 2
+            inputPt[1] -= ptsSpace.height / 2
+            inputPt.subtract(center)
+            return inputPt
+
+        }
+        cursor = toPos([px,py])
         cursor.x |= 0
         cursor.y |= 0
     }
@@ -110,8 +127,14 @@ function PlayTimeSegment() {
     Body.applyForce(PlayerA, PlayerA.position, Vector.mult(Vector.sub(cursor, PlayerA.position), 0.00001))
     Body.applyForce(PlayerB, PlayerB.position, Vector.mult(Vector.sub(cursor, PlayerB.position), 0.00001))
     //Run physics
-    runTicks = 60
+    runTicks = 64
     //Get world current state
 }
-ptsSpace.pixelScale = 2
-export { render, ptsForm, ptsSpace}
+window.addEventListener("wheel", (e) => {
+    var delta = (e.deltaY / 1000) * scale
+    scale -= delta
+    scale = clamp(scale, 0.25, 4)
+    inlog(scale)
+})
+
+export { render, ptsForm, ptsSpace, scale}

@@ -1,18 +1,25 @@
+import k from "./defaultSDObj"
 /**
  * The base for all Stardawn objects
  */
 var SDObject = class {
     constructor(){
-        this.body = null
-        this.position = null
-        this.velocity = null
+        this.id = null
+        /**
+         * @type {Matter.Body | Matter.Composite}
+         */
         this.matter = null
         this.owner = null
+        this.persistentData = null
+        this.segmentData = null
     }
 }
-var k = [3,4,5, "hello"]
 var SDObjectDef = class {
     constructor(){
+        /** The associated number ID of this object definition
+         * @type {number}
+         */
+        this.id
         /**Number of ticks a full charge shot takes*/
         this.wait = null
         /** Total damage this object deals
@@ -34,8 +41,12 @@ var SDObjectDef = class {
         this.dataweight = null
         /** How this object gets put in the info array */
         this.insertion = null
+        /** The size of this object in bytes in the info array
+         * @type {Number}
+         */
+        this.dataSize = null
     }
 }
-var SDAnimation = class {
+var ObjectList = {}
 
-}
+export {SDObject, ObjectList, SDObjectDef}

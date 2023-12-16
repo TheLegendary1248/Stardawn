@@ -11,11 +11,10 @@ body {
     height: 100%;
     left: 0px;
     top: 0px;
-    scale: 1;
 }
 #canvas-area canvas{
     background-color: #0000 !important;
-
+    cursor: crosshair;
 }
 #inlog {
     font-size: 16px;
