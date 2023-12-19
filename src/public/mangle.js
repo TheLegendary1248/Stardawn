@@ -7,6 +7,14 @@ var Engine = Matter.Engine,
     Events = Matter.Events,
     Body = Matter.Body,
     Vector = Matter.Vector;
+function mulberry32(a) {
+    return function() {
+        var t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+}
 var inlogElement = document.getElementById('inlog')
 function inlog(){inlogElement.innerText = Array.from(arguments).map(JSON.stringify)}
 //Sets up the render function for the render module

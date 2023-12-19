@@ -1,6 +1,10 @@
+import { Pts } from "./cdn"
 class SDSpace extends Pts.CanvasSpace
 {
-
+    /**
+     * @param {string | Element} elem 
+     * @param {function} [callback]
+     */
     constructor(elem, callback){
         super(elem, callback)
         //
