@@ -1,5 +1,6 @@
 //Code for handling and creating an instance of a world
 import SDSpace from "./sdspace";
+import {Pts} from "./cdn"
 
 var SDWorld = class {
     constructor(spaceArgs) {

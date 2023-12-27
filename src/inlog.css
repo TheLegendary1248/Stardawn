@@ -1,0 +1,29 @@
+#inlog {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #0002;
+    color: #3ac;
+    position: fixed;
+    width: 30vw;
+    min-height: 700px;
+    font-family: monospace;
+    pointer-events: none;
+}
+#inlog li {
+    border-top: #0008 1.5px dotted;
+}
+#inlog .log{
+    background-color: #fff1;
+}
+#inlog .error{
+    background-color: #f002;
+}
+#inlog .winerror{
+    background-color: #f005;
+}
+#inlog .warn{
+    background-color: #fff1;
+}
+#inlog .debug{
+    background-color: #0ff2;
+}

@@ -1,0 +1,12 @@
+<div id="inlog">
+    <div>Hi world!</div>
+    <div x-data="$store.inlog">
+        <template x-for="log in $store.inlog.feed.toReversed()">
+            <li  :class="log.type">
+                <div x-text="log.value">
+
+                </div>
+            </li>
+        </template>
+    </div>
+</div>

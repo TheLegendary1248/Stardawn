@@ -16,7 +16,7 @@ function mulberry32(a) {
     }
 }
 var inlogElement = document.getElementById('inlog')
-function inlog(){inlogElement.innerText = Array.from(arguments).map(JSON.stringify)}
+function inlog(){/* inlogElement.innerText = Array.from(arguments).map(JSON.stringify) */}
 //Sets up the render function for the render module
 var CustomWorldRender = function(render, time) {
         var startTime = Common.now(),
