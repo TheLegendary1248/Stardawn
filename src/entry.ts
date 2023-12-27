@@ -170,17 +170,5 @@ window.addEventListener("wheel", (e) => {
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
-setInterval(
-    (() => {
-         var index = 0
-         var insult = "Juan is gay "
-          return () => 
-      {
-              var randHex = (256 * 256 * 256 * Math.random())
-            randHex |= 0
-              var str = `<span style='color:#${(randHex).toString(16) }'>${insult[++index % insult.length]}</span>`
-            document.write(str)
-      }
-    }
-    )(), 100)
+
 export { Cursor, world, zoom}
