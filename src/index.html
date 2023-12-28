@@ -57,12 +57,21 @@
       referrerpolicy="no-referrer"></script>
     <script defer 
     src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js "></script> -->
-  <script defer src="mangle.js"></script>
+  <script defer type="module" src="utils.js"></script>
+  <script defer type="module" src="./mangle.js"></script>
   <script defer type="module" src="entry.ts"></script>
-</head>
+  <script defer>
+    var capture = () => {
+      console.log(Alpine.$el)
+    }
+    var arr = []
+    arr.push({ text: 'Ahaikyo!' })
+    arr.push({ text: 'hello world' })
+    arr.push(3)
+  </script>
 
 <body>
-  <div x-data="world" class="world main">
+  <div x-init="capture" x-data="() => { console.log($el); arr[0] = Alpine.reactive(arr[0]); return arr[0] }" class="world main">
     <div id="canvas-area">
       <canvas id="canvas-renderer"></canvas>
     </div>
@@ -86,4 +95,5 @@
       </div>
     </div>
   </div>
+
 </html>

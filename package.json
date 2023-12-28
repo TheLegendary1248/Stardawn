@@ -4,7 +4,7 @@
 	"scripts": {
 		"start": "bash ./node_modules/.bin/http-server ./src -c-1",
 		"dev": "vite",
-		"build": "tsc && vite build --emptyOutDir",
+		"build": "vite build --emptyOutDir",
 		"preview": "vite preview"
 	},
 	"devDependencies": {

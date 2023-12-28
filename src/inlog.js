@@ -3,16 +3,16 @@ import "./inlog.css"
 import { Alpine } from "./cdn"
 var dom = await import("./inlog.html?raw")
 console.log(dom)
-//console.log(dom)
 class inlogObject {
     constructor(){
         this.feed = []
         this.const = []
         this.lists = []
+        this.feedLimit = 50
     }
     log(e) {
         this.feed.push(e)
-        if(this.feed.length > 50)
+        if(this.feed.length > this.feedLimit)
             this.feed.shift()
     }
 }
@@ -28,7 +28,6 @@ function inlog(...args)
 function createElementFromHTML(htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
-  
     // Change this to div.childNodes to support multiple top-level nodes.
     return div.firstChild;
   }

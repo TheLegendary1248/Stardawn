@@ -4,9 +4,7 @@ import SDWorld from "./sdWorld";
 import { SDObject } from "./sdObj";
 import { Alpine, Matter, Pts } from "./cdn";
 import "./inlog.js"
-function clamp(number, min, max) {
-    return Math.max(min, Math.min(number, max));
-  }
+
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
@@ -15,21 +13,21 @@ var Cursor = {
     viewCenter: new Pts.Pt(0,0),
     smoothViewCenter: new Pts.Pt(0,0),
     inputCursor: new Pts.Pt(0,0),
-    //I don't have a good name for it right now
-    f(ftime) {
+    /**Smooths the current cursor values to such */
+    smooth(ftime: Number) {
         this.smoothViewCenter = Pts.Geom.interpolate(Cursor.smoothViewCenter, Cursor.viewCenter, Math.min(ftime * 6 / 1000, 1))
     }
 }
-// create a renderer
 let world = new SDWorld([document.getElementById("canvas-renderer"),DoPTSThing]) 
 let ptsSpace = world.space
 let runTicks = 64
 function RunPhysics() {
     if(runTicks > 0) {
-        Engine.update(engine, 1)
+        Matter.Engine.update(engine, 1)
         runTicks--
     }
 }
+
 let ptsForm = world.form
 ptsSpace.background = '#0000'
 var DrawWorldArea = () => {
@@ -46,7 +44,7 @@ ptsSpace.add(
     ptsSpace.clear()
     ptsForm.composite()
     
-    Cursor.f(ftime)
+    Cursor.smooth(ftime)
     //VIEWPORT TRANSFORMS
     //Center view
     ptsSpace.translate(ptsSpace.width / 2, ptsSpace.height / 2)
@@ -124,7 +122,7 @@ const defaultBodyOptions: Matter.IBodyDefinition = {
 }
 var CreatePlayerBody = (x,y) => {
     var k = 
-    Bodies.fromVertices(x,y, 
+    Matter.Bodies.fromVertices(x,y, 
         [{x:0,y:30},{x:15, y:-15},{x:-15, y: -15}], defaultBodyOptions)
     k.mass = 1
     return k
@@ -139,10 +137,10 @@ PlayerB.render.strokeStyle = "#ff0"
 var asteroids = []
 var engine = world.engine
 // asteroid field
-for(var i = 0; i < 40; i++) asteroids.push(Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
+for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
 // add all of the bodies to the world
-Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
-Events.on(engine, "collisionStart", function(event) {
+Matter.Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
+Matter.Events.on(engine, "collisionStart", function(event) {
     var pairs = event.pairs
     for (var i = 0; i < pairs.length; i++) {
         var pair = pairs[i];
@@ -154,12 +152,12 @@ Events.on(engine, "collisionStart", function(event) {
 })
 function PlayTimeSegment() {
     //Init
-    Body.applyForce(PlayerA, PlayerA.position, 
+    Matter.Body.applyForce(PlayerA, PlayerA.position, 
         Vector.div(Vector.sub(Cursor.inputCursor, PlayerA.position), 256)
         // {x:1, y:1}
         )
         
-    Body.applyForce(PlayerB, PlayerB.position, 
+    Matter.Body.applyForce(PlayerB, PlayerB.position, 
         Vector.div(Vector.sub(PlayerB.position, Cursor.inputCursor), 256))
     //Run physics
     runTicks = 64
@@ -170,5 +168,11 @@ window.addEventListener("wheel", (e) => {
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
+Alpine.data('world', () => ({
+    text: "hey world",
 
+    toggle() {
+        this.open = ! this.open
+    },
+}))
 export { Cursor, world, zoom}

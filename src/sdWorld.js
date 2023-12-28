@@ -1,14 +1,14 @@
 //Code for handling and creating an instance of a world
 import SDSpace from "./sdspace";
-import {Pts} from "./cdn"
+import {Matter, Pts} from "./cdn"
 
 var SDWorld = class {
     constructor(spaceArgs) {
-        this.engine = Engine.create()
+        this.engine = Matter.Engine.create()
         this.engine.gravity.scale = 0
         this.space = new SDSpace(...spaceArgs).setup({resize: true, retina: true})
         this.form = new Pts.CanvasForm(this.space)
-        this.render = Render.create({
+        this.render = Matter.Render.create({
             canvas: this.space.element,
             engine: this.engine,
             options: {
@@ -24,7 +24,7 @@ var SDWorld = class {
                 showDebug: true
             }
         });
-        // //Fix resize
+        //HACK: Fix resize (temporarily.)
         this.space.element.width = window.innerWidth;
         this.space.element.height = window.innerHeight;
     }
