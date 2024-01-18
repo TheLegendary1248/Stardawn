@@ -63,6 +63,11 @@
   <script defer>
     var capture = () => {
       console.log(Alpine.$el)
+      //console.log(Alpine.$id('element'))
+    }
+    var associate = (e) => {
+      
+      console.log(5 + e.getAttribute('alp-hash'))
     }
     var arr = []
     arr.push({ text: 'Ahaikyo!' })
@@ -71,29 +76,6 @@
   </script>
 
 <body>
-  <div x-init="capture" x-data="() => { console.log($el); arr[0] = Alpine.reactive(arr[0]); return arr[0] }" class="world main">
-    <div id="canvas-area">
-      <canvas id="canvas-renderer"></canvas>
-    </div>
-    <div id="overlay">
-      <div id="card-rack">
-
-      </div>
-      <div id="timer">
-        <div>3.5s</div>
-      </div>
-      <div id="coords">
-        <div class="center">
-          <div class="xcrosshair"></div>
-          <div class="ycrosshair"></div>
-          <div class="info-text">
-            <div>x:3947</div>
-            <div>y:3947</div>
-            <div>zoom: 1x</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 
 </html>

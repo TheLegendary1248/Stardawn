@@ -1,3 +1,4 @@
+import { Alpine } from "./cdn";
 /**
  * Clamps the given value to a range
  * @param {*} number 
@@ -13,4 +14,13 @@ globalThis.mulberry32 = function(a) {
         t ^= t + Math.imul(t ^ t >>> 7, t | 61);
         return ((t ^ t >>> 14) >>> 0) / 4294967296;
     }
+}
+/**
+ * Create an element that 
+ */
+var captured = []
+globalThis.captureHTML = function (html, data) {
+    
+    Alpine.reactive(data)
+    
 }

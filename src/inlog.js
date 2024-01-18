@@ -8,7 +8,7 @@ class inlogObject {
         this.feed = []
         this.const = []
         this.lists = []
-        this.feedLimit = 50
+        this.feedLimit = 10
     }
     log(e) {
         this.feed.push(e)
@@ -25,6 +25,10 @@ function inlog(...args)
     k.log(Array.from(arguments).map(JSON.stringify))
     console.log(...args)
 }
+/**
+ * @param {string} htmlString 
+ * @returns 
+ */
 function createElementFromHTML(htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
@@ -44,7 +48,7 @@ if (console.everything === undefined)
     console.defaultLog = console.log.bind(console);
     console.log = function(){
         inlogReactive.log({"type":"log", "datetime":TS(), "value":Array.from(arguments)});
-        console.defaultLog.apply(console, arguments);
+    console.defaultLog.apply(console, arguments);
     }
     console.defaultError = console.error.bind(console);
     console.error = function(){
@@ -62,7 +66,6 @@ if (console.everything === undefined)
         console.defaultDebug.apply(console, arguments);
     }
     window.onerror = function (error, url, line) {
-        console.defaultLog("shit")
         inlogReactive.log({
           type: "winerror",
           timeStamp: TS(),

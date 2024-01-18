@@ -4,7 +4,8 @@ import SDWorld from "./sdWorld";
 import { SDObject } from "./sdObj";
 import { Alpine, Matter, Pts } from "./cdn";
 import "./inlog.js"
-
+var worldHTML = await import("./html/world.html?raw")
+console.log(worldHTML.default)
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
@@ -27,7 +28,6 @@ function RunPhysics() {
         runTicks--
     }
 }
-
 let ptsForm = world.form
 ptsSpace.background = '#0000'
 var DrawWorldArea = () => {
