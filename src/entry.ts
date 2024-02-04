@@ -6,6 +6,7 @@ import { Alpine, Matter, Pts } from "./cdn";
 import "./inlog.js"
 var worldHTML = await import("./html/world.html?raw")
 console.log(worldHTML.default)
+document.getElementsByTagName("body")[0].innerHTML += worldHTML.default
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
