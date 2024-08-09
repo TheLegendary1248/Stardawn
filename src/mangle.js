@@ -1,3 +1,4 @@
+import Matter from "matter-js"
 var Engine = Matter.Engine,
     Render = Matter.Render,
     Bounds = Matter.Bounds,

@@ -1,6 +1,7 @@
 :root{
     --e-h: #111;
     --cosmic-latte: #fef8e6;
+    font-family: Tahoma, Verdana
 }
 body {
     background-color: #000;

@@ -2,7 +2,10 @@
 import SDSpace from "./sdspace";
 import SDWorld from "./sdWorld";
 import { SDObject } from "./sdObj";
-import { Alpine, Matter, Pts } from "./cdn";
+import Matter from "matter-js"
+import Alpine from "alpinejs"
+import Pts from "pts"
+// import { Alpine, Matter, Pts } from "./cdn";
 import "./inlog.js"
 var worldHTML = await import("./html/world.html?raw")
 console.log(worldHTML.default)

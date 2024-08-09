@@ -1,5 +1,5 @@
-import { Pts } from "./cdn"
-class SDSpace extends Pts.CanvasSpace
+import { CanvasSpace } from "pts"
+class SDSpace extends CanvasSpace
 {
     /**
      * @param {string | Element} elem 

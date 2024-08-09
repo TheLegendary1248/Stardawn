@@ -1,13 +1,14 @@
 //Code for handling and creating an instance of a world
 import SDSpace from "./sdspace";
-import {Matter, Pts} from "./cdn"
+import Matter from "matter-js"
+import { CanvasForm } from "pts";
 
 var SDWorld = class {
     constructor(spaceArgs) {
         this.engine = Matter.Engine.create()
         this.engine.gravity.scale = 0
         this.space = new SDSpace(...spaceArgs).setup({resize: true, retina: true})
-        this.form = new Pts.CanvasForm(this.space)
+        this.form = new CanvasForm(this.space)
         this.render = Matter.Render.create({
             canvas: this.space.element,
             engine: this.engine,

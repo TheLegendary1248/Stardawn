@@ -5,15 +5,18 @@
  * @typedef {import('matter-js')} Matter
  * @type {Matter}
  */
-export var Matter = globalThis["Matter"]
+// import Matter from "matter-js"
+// export var Matter /* globalThis["Matter"] */
 /**
  * @typedef {import('pts')} Pts
  * @property {number} namespace
  * @type {Pts}
  */
-export var Pts = globalThis["Pts"]
+// import Pts from "pts"
+// export var Pts = globalThis["Pts"]
 /** 
  * @typedef {import('alpinejs').default} Alpine
  * @type {Alpine}
  */
-export var Alpine = globalThis["Alpine"]
+// import Alpine from "alpinejs"
+// export var Alpine = globalThis["Alpine"]

@@ -1,4 +1,4 @@
-import { Alpine } from "./cdn";
+import Alpine from "alpinejs";
 /**
  * Clamps the given value to a range
  * @param {*} number 

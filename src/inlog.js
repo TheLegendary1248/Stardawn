@@ -1,6 +1,6 @@
 //Code for the in-browser debugger
 import "./inlog.css"
-import { Alpine } from "./cdn"
+import Alpine from "alpinejs"
 var dom = await import("./inlog.html?raw")
 console.log(dom)
 class inlogObject {
