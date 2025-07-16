@@ -3,6 +3,13 @@
     --cosmic-latte: #fef8e6;
     font-family: Tahoma, Verdana
 }
+#game{
+  /* border: 1px solid red; */
+  overflow:hidden;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
 body {
     background-color: #000;
     color: white;

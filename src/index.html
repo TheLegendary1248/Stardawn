@@ -10,6 +10,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
   <meta name="apple-mobile-web-app-title" content="Stardawn">
   <meta name="application-name" content="Stardawn">
   <meta name="msapplication-TileColor" content="#b91d47">
@@ -33,9 +34,9 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
     integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.js"
-    integrity="sha512-x6oUSDeai/Inb/9HFvbrBtDOnLvFSd37f6j2tKRePhFBLYAezejnN5xgG52M20rnFN66+6EWwuFwAneEXyq6oA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.js" -->
+  <!--   integrity="sha512-x6oUSDeai/Inb/9HFvbrBtDOnLvFSd37f6j2tKRePhFBLYAezejnN5xgG52M20rnFN66+6EWwuFwAneEXyq6oA==" -->
+  <!--   crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
   <!-- <script defer
 			  src="https://code.jquery.com/jquery-3.7.1.min.js"
 			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -60,39 +61,48 @@
   <script defer type="module" src="utils.js"></script>
   <script defer type="module" src="./mangle.js"></script>
   <script defer type="module" src="entry.ts"></script>
-  <script defer>
-    var capture = () => {
-      console.log(Alpine.$el)
-      //console.log(Alpine.$id('element'))
-    }
-    var associate = (e) => {
-      
-      console.log(5 + e.getAttribute('alp-hash'))
-    }
-    var arr = []
-    arr.push({ text: 'Ahaikyo!' })
-    arr.push({ text: 'hello world' })
-    arr.push(3)
-  </script>
+  <script defer src="main.js"></script>
+  <!-- <script defer> -->
+  <!--   var capture = () => { -->
+  <!--     console.log(Alpine.$el) -->
+  <!--     //console.log(Alpine.$id('element')) -->
+  <!--   } -->
+  <!--   var associate = (e) => { -->
+  <!--      -->
+  <!--     console.log(5 + e.getAttribute('alp-hash')) -->
+  <!--   } -->
+  <!--   var arr = [] -->
+  <!--   arr.push({ text: 'Ahaikyo!' }) -->
+  <!--   arr.push({ text: 'hello world' }) -->
+  <!--   arr.push(3) -->
+  <!-- </script> -->
 
+  </head>
   <body>
-      <noscript>I'm sorry, you need scripts to play this game. Happy travels without scripts though!</noscript>
-      <!--Loading screen--->
-      <div id="load_prog">
-         
-      </div>
-      <script>console.log("Progress Element Loaded")</script>
-      <!--Game UI--->
+    <noscript>I'm sorry, you need scripts to play this game. Happy travels without scripts though!</noscript>
+    <!--Loading screen--->
+    <div id="load_prog" hidden>
+      <p>Loading...</p>
+       
+    </div>
+    <script>console.log("Progress Element Loaded")</script>
+    <!--Game UI--->
+    <div id="home">
+      <h1>STARDAWN</h1>
       <div>
-        <h1>STARDAWN</h1>
-        <div>
-          <h3>Create game form</h3>
-          <input type="text">
-          <input type="text">
-        </div>
-        <button>create game</button>
-        <button type="">join game</button>
+        <h3>Create game form</h3>
       </div>
+      <button onclick="creategame()">create game</button>
+      <button type="">join game</button>
+    </div>
+    <footer>
+      githublink
+      authorlink
+      dependencylink
+    </footer>
+    <div id="game" style="display:none;">
+      <canvas id='canvas-renderer'></canvas>
+    </div>
   </body>  
 
 </html>

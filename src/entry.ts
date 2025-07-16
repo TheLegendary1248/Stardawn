@@ -3,24 +3,23 @@ import SDSpace from "./sdspace";
 import SDWorld from "./sdWorld";
 import { SDObject } from "./sdObj";
 import Matter from "matter-js"
-import Alpine from "alpinejs"
-import Pts from "pts"
-// import { Alpine, Matter, Pts } from "./cdn";
-import "./inlog.js"
+// import Alpine from "alpinejs"
+import { Pt, Geom, Circle } from 'pts'
+// import "./inlog.js"
 var worldHTML = await import("./html/world.html?raw")
 console.log(worldHTML.default)
-document.getElementsByTagName("body")[0].innerHTML += worldHTML.default
+// document.getElementsByTagName("body")[0].innerHTML += worldHTML.default
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
 var Cursor = {
-    followCursor: new Pts.Pt(0,0),
-    viewCenter: new Pts.Pt(0,0),
-    smoothViewCenter: new Pts.Pt(0,0),
-    inputCursor: new Pts.Pt(0,0),
+    followCursor: new Pt(0,0),
+    viewCenter: new Pt(0,0),
+    smoothViewCenter: new Pt(0,0),
+    inputCursor: new Pt(0,0),
     /**Smooths the current cursor values to such */
     smooth(ftime: Number) {
-        this.smoothViewCenter = Pts.Geom.interpolate(Cursor.smoothViewCenter, Cursor.viewCenter, Math.min(ftime * 6 / 1000, 1))
+        this.smoothViewCenter = Geom.interpolate(Cursor.smoothViewCenter, Cursor.viewCenter, Math.min(ftime * 6 / 1000, 1))
     }
 }
 let world = new SDWorld([document.getElementById("canvas-renderer"),DoPTSThing]) 
@@ -35,10 +34,15 @@ function RunPhysics() {
 let ptsForm = world.form
 ptsSpace.background = '#0000'
 var DrawWorldArea = () => {
-    ptsForm.fillOnly("#112").circle(Pts.Circle.fromCenter([0,0], 516));
+  const gradient = ptsForm.ctx.createLinearGradient(20, 0, 220, 0);
+
+// Add three color stops
+    gradient.addColorStop(0, "green");
+    gradient.addColorStop(0.5, "cyan");
+    gradient.addColorStop(1, "green");
+    ptsForm.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
 }
 function DoPTSThing() {
-ptsSpace.autoResize = true
 ptsSpace.add( 
     { animate: (time, ftime) => {
     //Run World
@@ -79,7 +83,7 @@ ptsSpace.add(
 /** @param {Event | TouchEvent} evt */ 
 action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) => 
 { 
-    var isTouch = evt instanceof TouchEvent
+    if(globalThis.TouchEvent) var isTouch = evt instanceof TouchEvent
     if (type == "keydown") 
     {
         var moveFunc = (m) => { Cursor.viewCenter.add(m); } 
@@ -103,7 +107,7 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
     if (type == "click") 
     {
         var toPos = (a) => {
-            var inputPt = new Pts.Pt(a)
+            var inputPt = new Pt(a)
             inputPt[0] -= ptsSpace.width / 2
             inputPt[1] -= ptsSpace.height / 2
             inputPt.divide(zoom)
@@ -114,7 +118,7 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
         Cursor.inputCursor.x |= 0
         Cursor.inputCursor.y |= 0
     }
-    Cursor.followCursor = new Pts.Pt(px, py)   
+    Cursor.followCursor = new Pt(px, py)   
 }
 } );
 ptsSpace.bindMouse().bindTouch().bindKeyboard().play()
@@ -157,26 +161,27 @@ Matter.Events.on(engine, "collisionStart", function(event) {
 function PlayTimeSegment() {
     //Init
     Matter.Body.applyForce(PlayerA, PlayerA.position, 
-        Vector.div(Vector.sub(Cursor.inputCursor, PlayerA.position), 256)
+        Matter.Vector.div(Matter.Vector.sub(Cursor.inputCursor, PlayerA.position), 256)
         // {x:1, y:1}
         )
         
     Matter.Body.applyForce(PlayerB, PlayerB.position, 
-        Vector.div(Vector.sub(PlayerB.position, Cursor.inputCursor), 256))
+        Matter.Vector.div(Matter.Vector.sub(PlayerB.position, Cursor.inputCursor), 256))
     //Run physics
     runTicks = 64
     //Get world current state
 }
+
 window.addEventListener("wheel", (e) => {
     var delta = (e.deltaY / 1000) * zoom
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
-Alpine.data('world', () => ({
-    text: "hey world",
-
-    toggle() {
-        this.open = ! this.open
-    },
-}))
+// Alpine.data('world', () => ({
+//     text: "hey world",
+//
+//     toggle() {
+//         this.open = ! this.open
+//     },
+// }))
 export { Cursor, world, zoom}
