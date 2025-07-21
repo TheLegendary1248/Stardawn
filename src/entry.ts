@@ -7,7 +7,7 @@ import Matter from "matter-js"
 import { Pt, Geom, Circle } from 'pts'
 // import "./inlog.js"
 var worldHTML = await import("./html/world.html?raw")
-console.log(worldHTML.default)
+// console.log(worldHTML.default)
 // document.getElementsByTagName("body")[0].innerHTML += worldHTML.default
 var seed = 1248;
 var Rand = mulberry32(seed)

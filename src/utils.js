@@ -20,7 +20,7 @@ globalThis.mulberry32 = function(a) {
  */
 var captured = []
 globalThis.captureHTML = function (html, data) {
-    
     Alpine.reactive(data)
-    
 }
+//Dev things
+globalThis.sd_core = {meta:{}} //Instead of logging everything, i figure to keep it here
