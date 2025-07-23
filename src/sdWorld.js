@@ -25,9 +25,6 @@ var SDWorld = class {
                 showDebug: true
             }
         });
-        //HACK: Fix resize (temporarily.)
-        // this.space.element.width = window.innerWidth;
-        // this.space.element.height = window.innerHeight;
     }
 }
 export default SDWorld

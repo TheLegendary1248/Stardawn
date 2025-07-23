@@ -1,11 +1,16 @@
+@property --desc-fill {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
 .card {
-    --desc-fill:50;
+    --desc-fill:50%;
     position: absolute;
     background-color: #111;
     height: 400px;
     width: 250px;
     border-radius: 10px;
-    box-sizing: content-box;
+    box-sizing: border-box;
     color: white;
     font-family: 'Urbanist';
 }
@@ -26,9 +31,18 @@
     position: absolute;
     transition: all calc(var(--t) * 1ms);
 }
+/*temp h2 style */
+.card h2 {
+  margin-top: 0px;
+  text-shadow: 2px 2px #000;
+  text-align:center;
+  border-bottom: 2px solid grey;
+  /* background-color: #262; */
+  color:#f92;
+}
 .card .image{
     background-color: #111;
-    height: calc(100% - var(--desc-fill) * 1%);
+    height: calc(100% - var(--desc-fill));
     top: 0px;
     border-radius: 10px 10px 0px 0px;
 }
@@ -40,11 +54,13 @@
 .card .desc {
     background: rgb(61,15,2);
     background: linear-gradient(149deg, rgba(53,53,85,1) 0%, rgba(32,32,32,1) 25%, rgba(32,32,32,1) 75%, rgba(53,53,85,1) 100%);
-    border-top: 4px inset #444;
+    /* border-top: 4px inset #444; */
     position: absolute;
-    height: calc(var(--desc-fill) * 1%);
+    height: var(--desc-fill);
     bottom: 0px;
     border-radius: 0px 0px 10px 10px;
-    overflow: scroll;
-    padding: 5px;
+    overflow-y: scroll;
+}
+.card .padded-container {
+  padding:8px
 }
