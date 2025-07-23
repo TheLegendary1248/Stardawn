@@ -9,7 +9,7 @@ export default {
         },
       },
     build: {
-        outDir: "../dist"
+        outDir: "/tmp/sdDist"
     },
     appType: "mpa",
     plugins: [Inspect()]

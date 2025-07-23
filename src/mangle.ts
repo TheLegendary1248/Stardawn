@@ -7,7 +7,6 @@ var Engine = Matter.Engine,
     Events = Matter.Events,
     Vector = Matter.Vector;
 
-var inlogElement = document.getElementById('inlog')
 //Sets up the render function for the render module
 globalThis.CustomWorldRender = function(render, time) {
         var startTime = Common.now(),
