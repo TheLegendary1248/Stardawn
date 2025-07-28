@@ -13,15 +13,15 @@
 		"vite-plugin-inspect": "^0.8.1"
 	},
 	"dependencies": {
-		"alpinejs": "^3.13.3",
+		"@dimforge/rapier2d": "*",
 		"firebase": "^10.6.0",
 		"http-server": "^14.1.1",
 		"jquery": "^3.7.1",
-		"paper": "^0.12.17",
 		"peer": "^1.0.2",
 		"pts": "^0.11.5",
 		"typescript": "^5.3.3",
-		"uglify-js": "^3.17.4"
+		"uglify-js": "^3.17.4",
+		"vite-plugin-wasm": "^3.5.0"
 	},
 	"type": "module"
 }

@@ -91,3 +91,4 @@ coverage
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+package-lock.json

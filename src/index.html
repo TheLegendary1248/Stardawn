@@ -38,17 +38,26 @@
       <div>
         <h3>Create game form</h3>
       </div>
+      <button onclick="createDuel()">Quick Duel</button>
       <button onclick="creategame()">create game</button>
       <button type="">join game</button>
+      <div class="config game">
+        <div class="field"></div>
+      </div>
     </div>
     <footer>
-      githublink
+      <a href="https://github.com/TheLegendary1248/Stardawn">Github</a>
       authorlink
-      dependencylink
+      <div>
+        <a href="https://rapier.rs/">Rapier</a> 
+        <a href="https://ptsjs.org/">Pts</a>
+      </div>
     </footer>
     <div id="game" style="display:none;">
       <canvas id='canvas-renderer'></canvas>
     </div>
+    <div style="display:none;">
+      <canvas id='canvas-dummy'></canvas>
+    </div>
   </body>  
-
 </html>

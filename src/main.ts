@@ -1,4 +1,6 @@
 import "./mangle.ts"
+import("@dimforge/rapier2d").then(r => globalThis.rapier = r)
+import "./controller.js"
 /*=================MAIN.JS====================*/
 function creategame(){
   hide_main_menu()
@@ -41,11 +43,8 @@ import SDWorld from "./sdWorld";
 import { SDObject } from "./sdObj";
 import Matter from "matter-js"
 // import Alpine from "alpinejs"
-import { Pt, Geom, Circle } from 'pts'
+import { Pt, Geom, Circle, CanvasForm } from 'pts'
 // import "./inlog.js"
-var worldHTML = await import("./html/world.html?raw")
-// console.log(worldHTML.default)
-// document.getElementsByTagName("body")[0].innerHTML += worldHTML.default
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
@@ -59,7 +58,8 @@ var Cursor = {
         this.smoothViewCenter = Geom.interpolate(Cursor.smoothViewCenter, Cursor.viewCenter, Math.min(ftime * 6 / 1000, 1))
     }
 }
-let world = new SDWorld([document.getElementById("canvas-renderer"),DoPTSThing]) 
+
+let world = new SDWorld([document.getElementById("canvas-dummy"),/*DoPTSThing*/]) 
 let ptsSpace = world.space
 let runTicks = 64
 function RunPhysics() {
@@ -70,51 +70,52 @@ function RunPhysics() {
 }
 let ptsForm = world.form
 ptsSpace.background = '#0000'
-var DrawWorldArea = () => {
-  const gradient = ptsForm.ctx.createLinearGradient(20, 0, 220, 0);
+var DrawWorldArea = (form: CanvasForm) => {
+  const gradient = form.ctx.createLinearGradient(20, 0, 220, 0);
 
 // Add three color stops
     gradient.addColorStop(0, "green");
     gradient.addColorStop(0.5, "cyan");
     gradient.addColorStop(1, "green");
-    ptsForm.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
+    form.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
 }
-function DoPTSThing() {
-ptsSpace.add( 
+function DoPTSThing(form: CanvasForm) {
+form.space.add( 
     { animate: (time, ftime) => {
+    console.log(Date.now())
     //Run World
-    RunPhysics()
+    // RunPhysics()
     //Clear canvas
-    ptsSpace.ctx.globalCompositeOperation = "source-in"
-    ptsSpace.clear()
-    ptsForm.composite()
+    form.space.ctx.globalCompositeOperation = "source-in"
+    form.space.clear()
+    form.composite()
     
     Cursor.smooth(ftime)
     //VIEWPORT TRANSFORMS
     //Center view
-    ptsSpace.translate(ptsSpace.width / 2, ptsSpace.height / 2)
+    form.space.translate(form.space.width / 2, form.space.height / 2)
     //Zoom
-    ptsSpace.ctx.scale(zoom, zoom)
+    form.space.ctx.scale(zoom, zoom)
     //Offset to view center
-    ptsSpace.translate(Cursor.smoothViewCenter.x,Cursor.smoothViewCenter.y)
+    form.space.translate(Cursor.smoothViewCenter.x,Cursor.smoothViewCenter.y)
     
-    DrawWorldArea()
+    DrawWorldArea(form)
     //Reset
-    ptsSpace.ctx.scale(1,1)
-    ptsForm.dash(false).fill("#ffff").stroke("#450f",4)
+    form.space.ctx.scale(1,1)
+    form.dash(false).fill("#ffff").stroke("#450f",4)
     
     CustomWorldRender(world.render, time)
     //Cursor
-    ptsForm.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
-    ptsForm.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
-    ptsForm.dash(false)
+    form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
+    form.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
+    form.dash(false)
     //UI Draw
-    ptsSpace.ctx.resetTransform()
-    ptsSpace.ctx.scale(ptsSpace.pixelScale,ptsSpace.pixelScale)
+    form.space.ctx.resetTransform()
+    form.space.ctx.scale(form.space.pixelScale,form.space.pixelScale)
     //Follow cursor
-    ptsSpace.ctx.globalCompositeOperation = "difference"
-    ptsForm.fillOnly("#fff").point(Cursor.followCursor, 6, "circle")
-    ptsForm.strokeOnly("#fff", 4).point(Cursor.followCursor, 16, "circle")
+    form.space.ctx.globalCompositeOperation = "difference"
+    form.fillOnly("#fff").point(Cursor.followCursor, 6, "circle")
+    form.strokeOnly("#fff", 4).point(Cursor.followCursor, 16, "circle")
     
 },
 /** @param {Event | TouchEvent} evt */ 
@@ -145,8 +146,8 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
     {
         var toPos = (a) => {
             var inputPt = new Pt(a)
-            inputPt[0] -= ptsSpace.width / 2
-            inputPt[1] -= ptsSpace.height / 2
+            inputPt[0] -= form.space.width / 2
+            inputPt[1] -= form.space.height / 2
             inputPt.divide(zoom)
             inputPt.subtract(Cursor.viewCenter)
             return inputPt
@@ -158,7 +159,7 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
     Cursor.followCursor = new Pt(px, py)   
 }
 } );
-ptsSpace.bindMouse().bindTouch().bindKeyboard().play()
+form.space.bindMouse().bindTouch().bindKeyboard().play()
 }
 const defaultBodyOptions: Matter.IBodyDefinition = {
     friction: 0,
@@ -214,11 +215,4 @@ window.addEventListener("wheel", (e) => {
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
-// Alpine.data('world', () => ({
-//     text: "hey world",
-//
-//     toggle() {
-//         this.open = ! this.open
-//     },
-// }))
-export { Cursor, world, zoom}
+export { Cursor, world, zoom, hide_main_menu, DoPTSThing}
