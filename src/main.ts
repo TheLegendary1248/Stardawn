@@ -10,7 +10,6 @@ function creategame(){
 function hide_main_menu(){
   hide_elem(document.querySelector("#home"))
   document.querySelector("#game").style.display = ""
-  window.dispatchEvent(new Event("resize")) //Triggers pts.CanvasSpace autoresize feature
 }
 /** Hides given element
   * @param {HTMLElement} elem 
@@ -104,7 +103,7 @@ form.space.add(
     form.space.ctx.scale(1,1)
     form.dash(false).fill("#ffff").stroke("#450f",4)
     
-    CustomWorldRender(world.render, time)
+    // CustomWorldRender(world.render, time)
     //Cursor
     form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
     form.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
