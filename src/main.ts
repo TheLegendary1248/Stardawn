@@ -43,6 +43,7 @@ import { SDObject } from "./sdObj";
 import Matter from "matter-js"
 // import Alpine from "alpinejs"
 import { Pt, Geom, Circle, CanvasForm } from 'pts'
+import RAPIER from "@dimforge/rapier2d"
 // import "./inlog.js"
 var seed = 1248;
 var Rand = mulberry32(seed)
@@ -63,8 +64,9 @@ let ptsSpace = world.space
 let runTicks = 64
 function RunPhysics() {
     if(runTicks > 0) {
-        Matter.Engine.update(engine, 1)
-        runTicks--
+      // console.log(globalThis.world)
+      globalThis.rapierWorld?.step()
+      runTicks--
     }
 }
 let ptsForm = world.form
@@ -78,12 +80,11 @@ var DrawWorldArea = (form: CanvasForm) => {
     gradient.addColorStop(1, "green");
     form.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
 }
-function DoPTSThing(form: CanvasForm) {
+function DoPTSThing(form: CanvasForm, world: RAPIER.World) {
 form.space.add( 
     { animate: (time, ftime) => {
-    console.log(Date.now())
     //Run World
-    // RunPhysics()
+    RunPhysics()
     //Clear canvas
     form.space.ctx.globalCompositeOperation = "source-in"
     form.space.clear()
@@ -99,11 +100,19 @@ form.space.add(
     form.space.translate(Cursor.smoothViewCenter.x,Cursor.smoothViewCenter.y)
     
     DrawWorldArea(form)
+
+    //Draw debug
+    const { vertices: verts, colors } = world.debugRender();
+
+    for (let i = 0; i < verts.length / 4; i += 1) {
+        let k = i * 4
+        form.strokeOnly("#f00",1/zoom).line([[verts[k],-verts[k+1]],[verts[k+2],-verts[k+3]]])
+    }
+
     //Reset
     form.space.ctx.scale(1,1)
     form.dash(false).fill("#ffff").stroke("#450f",4)
     
-    // CustomWorldRender(world.render, time)
     //Cursor
     form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
     form.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
@@ -115,7 +124,6 @@ form.space.add(
     form.space.ctx.globalCompositeOperation = "difference"
     form.fillOnly("#fff").point(Cursor.followCursor, 6, "circle")
     form.strokeOnly("#fff", 4).point(Cursor.followCursor, 16, "circle")
-    
 },
 /** @param {Event | TouchEvent} evt */ 
 action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) => 
@@ -182,7 +190,7 @@ PlayerB.render.strokeStyle = "#ff0"
 var asteroids = []
 var engine = world.engine
 // asteroid field
-for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
+// for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
 // add all of the bodies to the world
 Matter.Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
 Matter.Events.on(engine, "collisionStart", function(event) {
@@ -214,4 +222,4 @@ window.addEventListener("wheel", (e) => {
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
-export { Cursor, world, zoom, hide_main_menu, DoPTSThing}
+export { Cursor, Rand, world, zoom, hide_main_menu, DoPTSThing}
