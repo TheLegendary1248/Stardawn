@@ -1,7 +1,7 @@
 import SDSpace from "./sdspace";
 import { CanvasForm } from "pts";
 import { Rand, hide_main_menu, DoPTSThing } from "./main";
-import RAPIER from "@dimforge/rapier2d";
+import Matter from "matter-js";
 import { Pt } from 'pts'
 /* Code interface for game state manipulation 
  */
@@ -15,16 +15,26 @@ class ServerController {
   }
 }
 class Player {
-  submitTurn(cursorPos){}
+  state = {
+    health,
+    savedChoices
+  }
+  submitTurn(turnOpts)
+  {
+    turnOpts.cursorPos  
+    if(turnOpts.cardChoice = 1){ if(savedChoices.length <= 2) savedChoices.push(turn)}
+
+  }
 }
 class Server {
   isOnline = false;
 
 }
 class World {
-  world = new RAPIER.World({x:0,y:0})
-
-
+  world = new Matter.World({x:0,y:0})
+  state = {
+    cardRNGSeed
+  }
 }
 globalThis.createDuel = () => {
   //create game 
@@ -45,8 +55,13 @@ globalThis.createDuel = () => {
   let asteroids = []
   for(var i = 0; i < 40; i++) 
     asteroids.push(ServerController.world.createCollider(getColDesc(),getRigidBody()));
+  let players = []
+  Server.world.createCollider(RAPIER.ColliderDesc.c)
 
   ServerController.canvas = new SDSpace(document.getElementById("canvas-renderer"), () => { DoPTSThing(ServerController.form, ServerController.world) }).setup({resize: true, retina: true})
   ServerController.form = new CanvasForm(ServerController.canvas)
   hide_main_menu()
+}
+function AsteroidShapeGen(){
+  throw new Error("didn't code this yet lol")
 }

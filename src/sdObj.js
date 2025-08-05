@@ -6,9 +6,6 @@ var SDObject = class {
     constructor(id, matter){
         /** The ID of this object @type {Number} */
         this.id = id
-        /** The MatterJS object associated with this object @type {Matter.Body | Matter.Composite}*/
-        this.matter = matter
-        this.owner = null
         this.persistentData = null
         this.segmentData = null
     }

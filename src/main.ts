@@ -1,11 +1,10 @@
 import "./mangle.ts"
-import("@dimforge/rapier2d").then(r => globalThis.rapier = r)
 import "./controller.js"
 /*=================MAIN.JS====================*/
 function creategame(){
   hide_main_menu()
   // initializeGame()
-  
+  window.dispatchEvent(new Event("resize")) //Triggers pts.CanvasSpace autoresize feature
 }
 function hide_main_menu(){
   hide_elem(document.querySelector("#home"))
@@ -21,7 +20,7 @@ globalThis.creategame = creategame
 /*=================UTILS.JS===================*/
 
 globalThis.clamp = function (number, min, max) { return Math.max(min, Math.min(number, max))}
-globalThis.mulberry32 = function(a) {
+let mulberry32 = function(a) {
     return function () {
         var t = a += 0x6D2B79F5;
         t = Math.imul(t ^ t >>> 15, t | 1);
@@ -59,13 +58,12 @@ var Cursor = {
     }
 }
 
-let world = new SDWorld([document.getElementById("canvas-dummy"),/*DoPTSThing*/]) 
+let world = new SDWorld([document.getElementById("canvas-renderer"),DoPTSThing]) 
 let ptsSpace = world.space
 let runTicks = 64
 function RunPhysics() {
     if(runTicks > 0) {
-      // console.log(globalThis.world)
-      globalThis.rapierWorld?.step()
+      Matter.Engine.update(engine, 1)
       runTicks--
     }
 }
@@ -80,7 +78,8 @@ var DrawWorldArea = (form: CanvasForm) => {
     gradient.addColorStop(1, "green");
     form.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
 }
-function DoPTSThing(form: CanvasForm, world: RAPIER.World) {
+function DoPTSThing(form: CanvasForm) {
+form = ptsForm
 form.space.add( 
     { animate: (time, ftime) => {
     //Run World
@@ -100,19 +99,21 @@ form.space.add(
     form.space.translate(Cursor.smoothViewCenter.x,Cursor.smoothViewCenter.y)
     
     DrawWorldArea(form)
+      // console.log(world)
 
     //Draw debug
-    const { vertices: verts, colors } = world.debugRender();
-
-    for (let i = 0; i < verts.length / 4; i += 1) {
-        let k = i * 4
-        form.strokeOnly("#f00",1/zoom).line([[verts[k],-verts[k+1]],[verts[k+2],-verts[k+3]]])
-    }
+    // const { vertices: verts, colors } = world.debugRender();
+    //
+    // for (let i = 0; i < verts.length / 4; i += 1) {
+    //     let k = i * 4
+    //     form.strokeOnly("#f00",1/zoom).line([[verts[k],verts[k+1]],[verts[k+2],verts[k+3]]])
+    // }
 
     //Reset
     form.space.ctx.scale(1,1)
     form.dash(false).fill("#ffff").stroke("#450f",4)
     
+    CustomWorldRender(world.render, time)
     //Cursor
     form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
     form.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
@@ -190,7 +191,7 @@ PlayerB.render.strokeStyle = "#ff0"
 var asteroids = []
 var engine = world.engine
 // asteroid field
-// for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
+for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
 // add all of the bodies to the world
 Matter.Composite.add(engine.world, [...asteroids, PlayerA, PlayerB]);
 Matter.Events.on(engine, "collisionStart", function(event) {

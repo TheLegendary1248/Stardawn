@@ -7,7 +7,6 @@ class SDSpace extends CanvasSpace
      */
     constructor(elem, callback){
         super(elem, callback)
-        //
     }
     /**
      * @type {Pts.CanvasSpace()}

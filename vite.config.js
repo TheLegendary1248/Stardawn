@@ -1,4 +1,3 @@
-import wasm from 'vite-plugin-wasm'
 import Inspect from 'vite-plugin-inspect'
 /** @type {import('vite').UserConfig} */
 export default {
@@ -12,5 +11,5 @@ export default {
         outDir: "/tmp/sdDist"
     },
     appType: "mpa",
-    plugins: [Inspect(),wasm(),]
+    plugins: [Inspect()]
 }
