@@ -1,0 +1,34 @@
+snowball
+- consumes all projectiles it contacts
+
+zap
+- lightning that bounces from projectiles with forking and increasing damage
+
+white hole 
+- repels all objects to a certain radius from it
+
+black hole
+- inverse of that one
+
+sawblade
+- tears through terrain
+
+missile
+
+hitscan
+- launches all objects in area towards direction
+
+grapple
+- as is
+  - following turns with enough charge detaches it
+
+primary
+- plain twin-shot that crosses at some point ahead depending on charge
+
+portal
+
+warp-drive
+- teleport towards direction depending on charge
+
+relative jump
+- warp to opposite direction of an object, wiht constant distance (like chinese checkers)

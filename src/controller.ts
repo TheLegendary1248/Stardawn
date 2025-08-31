@@ -1,13 +1,13 @@
 import SDSpace from "./sdspace";
 import { CanvasForm } from "pts";
-import { Rand, hide_main_menu, DoPTSThing } from "./main";
+import { Rand, hide_main_menu, DoPTSThing, defaultBodyOptions, world } from "./main";
 import Matter from "matter-js";
 import { Pt } from 'pts'
 /* Code interface for game state manipulation 
  */
 class ServerController {
   players = [];
-  world;
+  engine: Matter.Engine;
   canvas;
   form;
   constructor(){
@@ -16,8 +16,8 @@ class ServerController {
 }
 class Player {
   state = {
-    health,
-    savedChoices
+    health: null,
+    savedChoices: null
   }
   submitTurn(turnOpts)
   {
@@ -44,19 +44,10 @@ globalThis.createDuel = () => {
 
   //create world
   console.log(ServerController.form)
-  globalThis.rapierWorld = ServerController.world = new RAPIER.World({x:0,y:0}) //DONT FORGET THIS
+  ServerController.engine = new Matter.Engine.create()
+  DefaultArenaGen(ServerController.engine.world)
 
-  let rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic();
-  let getRigidBody = () => ServerController.world.createRigidBody(rigidBodyDesc);
-  let getColDesc = () => { 
-    let k = [Rand(),Rand(),Rand()]
-    return RAPIER.ColliderDesc.ball((k[2] * 40 + 10) | 0).setTranslation((k[0] * 1000 - 500) | 0,(k[1] * 1000 - 500) | 0)
-  }
-  let asteroids = []
-  for(var i = 0; i < 40; i++) 
-    asteroids.push(ServerController.world.createCollider(getColDesc(),getRigidBody()));
   let players = []
-  Server.world.createCollider(RAPIER.ColliderDesc.c)
 
   ServerController.canvas = new SDSpace(document.getElementById("canvas-renderer"), () => { DoPTSThing(ServerController.form, ServerController.world) }).setup({resize: true, retina: true})
   ServerController.form = new CanvasForm(ServerController.canvas)
@@ -64,4 +55,9 @@ globalThis.createDuel = () => {
 }
 function AsteroidShapeGen(){
   throw new Error("didn't code this yet lol")
+}
+function DefaultArenaGen(world: Matter.World){
+  let asteroids = []
+  for(var i = 0; i < 40; i++) asteroids.push(Matter.Bodies.circle((Rand() * 1000 - 500) | 0, (Rand() * 1000 - 500) | 0, (Rand() * 40 + 10) | 0, defaultBodyOptions));
+  Matter.Composite.add(world, [...asteroids]);
 }

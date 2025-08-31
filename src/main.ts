@@ -1,5 +1,5 @@
 import "./mangle.ts"
-import "./controller.js"
+import "./controller.ts"
 /*=================MAIN.JS====================*/
 function creategame(){
   hide_main_menu()
@@ -36,29 +36,25 @@ var captured = []
 globalThis.sd_core = {meta:{}} //Instead of logging everything, i figure to keep it here
 /*============================================*/
 //import HTMLInsert from "./HTMLInsert";
-import SDSpace from "./sdspace";
 import SDWorld from "./sdWorld";
-import { SDObject } from "./sdObj";
 import Matter from "matter-js"
-// import Alpine from "alpinejs"
 import { Pt, Geom, Circle, CanvasForm } from 'pts'
-import RAPIER from "@dimforge/rapier2d"
-// import "./inlog.js"
 var seed = 1248;
 var Rand = mulberry32(seed)
 var zoom = 1;
-var Cursor = {
-    followCursor: new Pt(0,0),
-    viewCenter: new Pt(0,0),
-    smoothViewCenter: new Pt(0,0),
-    inputCursor: new Pt(0,0),
+class Cursor {
+    followCursor = new Pt(0,0);
+    viewCenter = new Pt(0,0);
+    smoothViewCenter =  new Pt(0,0);
+    inputCursor = new Pt(0,0);
     /**Smooths the current cursor values to such */
-    smooth(ftime: Number) {
-        this.smoothViewCenter = Geom.interpolate(Cursor.smoothViewCenter, Cursor.viewCenter, Math.min(ftime * 6 / 1000, 1))
+    smooth(ftime: number) {
+        this.smoothViewCenter = Geom.interpolate(this.smoothViewCenter, this.viewCenter, Math.min(ftime * 6 / 1000, 1))
     }
 }
 
-let world = new SDWorld([document.getElementById("canvas-renderer"),DoPTSThing]) 
+let world = new SDWorld([document.getElementById("canvas-renderer"), () => { DoPTSThing(world.form) }]) 
+
 let ptsSpace = world.space
 let runTicks = 64
 function RunPhysics() {
@@ -78,8 +74,10 @@ var DrawWorldArea = (form: CanvasForm) => {
     gradient.addColorStop(1, "green");
     form.fillOnly("#112").circle(Circle.fromCenter([0,0], 516));
 }
+
+
 function DoPTSThing(form: CanvasForm) {
-form = ptsForm
+let cursor = new Cursor()
 form.space.add( 
     { animate: (time, ftime) => {
     //Run World
@@ -89,25 +87,16 @@ form.space.add(
     form.space.clear()
     form.composite()
     
-    Cursor.smooth(ftime)
+    cursor.smooth(ftime)
     //VIEWPORT TRANSFORMS
     //Center view
     form.space.translate(form.space.width / 2, form.space.height / 2)
     //Zoom
     form.space.ctx.scale(zoom, zoom)
     //Offset to view center
-    form.space.translate(Cursor.smoothViewCenter.x,Cursor.smoothViewCenter.y)
+    form.space.translate(cursor.smoothViewCenter.x,cursor.smoothViewCenter.y)
     
     DrawWorldArea(form)
-      // console.log(world)
-
-    //Draw debug
-    // const { vertices: verts, colors } = world.debugRender();
-    //
-    // for (let i = 0; i < verts.length / 4; i += 1) {
-    //     let k = i * 4
-    //     form.strokeOnly("#f00",1/zoom).line([[verts[k],verts[k+1]],[verts[k+2],verts[k+3]]])
-    // }
 
     //Reset
     form.space.ctx.scale(1,1)
@@ -115,16 +104,16 @@ form.space.add(
     
     CustomWorldRender(world.render, time)
     //Cursor
-    form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(Cursor.inputCursor, 16 / zoom, "circle")
-    form.fillOnly("#f00").point(Cursor.inputCursor, 3 / zoom, "circle")
+    form.strokeOnly("#fff", 3 / zoom).dash(true,time/200).point(cursor.inputCursor, 16 / zoom, "circle")
+    form.fillOnly("#f00").point(cursor.inputCursor, 3 / zoom, "circle")
     form.dash(false)
     //UI Draw
     form.space.ctx.resetTransform()
     form.space.ctx.scale(form.space.pixelScale,form.space.pixelScale)
     //Follow cursor
     form.space.ctx.globalCompositeOperation = "difference"
-    form.fillOnly("#fff").point(Cursor.followCursor, 6, "circle")
-    form.strokeOnly("#fff", 4).point(Cursor.followCursor, 16, "circle")
+    form.fillOnly("#fff").point(cursor.followCursor, 6, "circle")
+    form.strokeOnly("#fff", 4).point(cursor.followCursor, 16, "circle")
 },
 /** @param {Event | TouchEvent} evt */ 
 action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) => 
@@ -132,13 +121,13 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
     if(globalThis.TouchEvent) var isTouch = evt instanceof TouchEvent
     if (type == "keydown") 
     {
-        var moveFunc = (m) => { Cursor.viewCenter.add(m); } 
+        var moveFunc = (m) => { cursor.viewCenter.add(m); } 
         switch (evt.key) {
             case "w": case "ArrowUp": moveFunc([0,10]); break;
             case "a": case "ArrowLeft": moveFunc([10,0]); break;
             case "s": case "ArrowDown": moveFunc([0,-10]); break;
             case "d": case "ArrowRight": moveFunc([-10,0]); break;
-            case " ": PlayTimeSegment(); break;
+            case " ": PlayTimeSegment(cursor); break;
         }
     }
     if (type == "drag")
@@ -146,9 +135,9 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
         if(isTouch)
         {
             console.log(evt.touches)
-            Cursor.viewCenter.add([evt.movementX / zoom, evt.movementY / zoom])
+            cursor.viewCenter.add([evt.movementX / zoom, evt.movementY / zoom])
         }
-        else Cursor.viewCenter.add([evt.movementX / zoom,evt.movementY / zoom])
+        else cursor.viewCenter.add([evt.movementX / zoom,evt.movementY / zoom])
     }
     if (type == "click") 
     {
@@ -157,14 +146,14 @@ action: (type, px, py, evt: (Event & KeyboardEvent & DragEvent & TouchEvent)) =>
             inputPt[0] -= form.space.width / 2
             inputPt[1] -= form.space.height / 2
             inputPt.divide(zoom)
-            inputPt.subtract(Cursor.viewCenter)
+            inputPt.subtract(cursor.viewCenter)
             return inputPt
         }
-        Cursor.inputCursor = toPos([px,py])
-        Cursor.inputCursor.x |= 0
-        Cursor.inputCursor.y |= 0
+        cursor.inputCursor = toPos([px,py])
+        cursor.inputCursor.x |= 0
+        cursor.inputCursor.y |= 0
     }
-    Cursor.followCursor = new Pt(px, py)   
+    cursor.followCursor = new Pt(px, py)   
 }
 } );
 form.space.bindMouse().bindTouch().bindKeyboard().play()
@@ -172,7 +161,7 @@ form.space.bindMouse().bindTouch().bindKeyboard().play()
 const defaultBodyOptions: Matter.IBodyDefinition = {
     friction: 0,
     frictionAir: 0,
-    restitution: 0
+    restitution: 1
 }
 var CreatePlayerBody = (x,y) => {
     var k = 
@@ -204,15 +193,15 @@ Matter.Events.on(engine, "collisionStart", function(event) {
         if(bodyB.oncollide) bodyB.oncollide()
     }
 })
-function PlayTimeSegment() {
+function PlayTimeSegment(cursor: Cursor) {
     //Init
     Matter.Body.applyForce(PlayerA, PlayerA.position, 
-        Matter.Vector.div(Matter.Vector.sub(Cursor.inputCursor, PlayerA.position), 256)
+        Matter.Vector.div(Matter.Vector.sub(cursor.inputCursor, PlayerA.position), 256)
         // {x:1, y:1}
         )
         
     Matter.Body.applyForce(PlayerB, PlayerB.position, 
-        Matter.Vector.div(Matter.Vector.sub(PlayerB.position, Cursor.inputCursor), 256))
+        Matter.Vector.div(Matter.Vector.sub(PlayerB.position, cursor.inputCursor), 256))
     //Run physics
     runTicks = 64
     //Get world current state
@@ -223,4 +212,4 @@ window.addEventListener("wheel", (e) => {
     zoom -= delta
     zoom = clamp(zoom, 0.25, 4)
 })
-export { Cursor, Rand, world, zoom, hide_main_menu, DoPTSThing}
+export { defaultBodyOptions, Cursor, Rand, world, zoom, hide_main_menu, DoPTSThing}
